@@ -21,7 +21,7 @@ public class MapPresenter implements MapContract.MapPresenter{
 
     @Override
     public void initView() {
-       // mapView.initMap();
+        mapView.initMap();
     }
 
     @Override
