@@ -97,6 +97,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.setMyLocationEnabled(true);
 
+        sensorEventHelper = new SensorEventHelper(getContext());
         if (sensorEventHelper!=null){
             sensorEventHelper.registerSensorListener();
         }
@@ -152,7 +153,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
                     firstFix = true;
                     addCircle(location,aMapLocation.getAccuracy());//添加定位精度圆
                     addMarker(location);//添加定位图标
-                    sensorEventHelper.setCurrentMarker(Locmarker);
+                    sensorEventHelper.setCurrentMarker(Locmarker);   //定位图标旋转
                 }else {
                     circle.setCenter(location);
                     circle.setRadius(aMapLocation.getAccuracy());
@@ -160,7 +161,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
                 }
                 aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,18));
             }else {
-                System.out.println(TAG+":"+"errorcode = "+aMapLocation.getErrorCode());
+                System.out.println(TAG+":"+"errorcode = "+aMapLocation.getErrorCode()+","+aMapLocation.getLocationDetail());
             }
         }
     }
@@ -208,7 +209,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
             return;
         }
         Bitmap bMap = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.location_marker);
+                R.drawable.navi_map_gps_locked);
         BitmapDescriptor des = BitmapDescriptorFactory.fromBitmap(bMap);
 
 
