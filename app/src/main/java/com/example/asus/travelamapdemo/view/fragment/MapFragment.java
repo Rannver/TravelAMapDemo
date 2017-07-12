@@ -127,11 +127,11 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     @Override
     public void onPause() {
         super.onPause();
-        if (sensorEventHelper!=null){
-            sensorEventHelper.unRegisterSensorListener();
-            sensorEventHelper.setCurrentMarker(null);
-            sensorEventHelper = null;
-        }
+//        if (sensorEventHelper!=null){
+//            sensorEventHelper.unRegisterSensorListener();
+//            sensorEventHelper.setCurrentMarker(null);
+//            sensorEventHelper = null;
+//        }
         mapview.onPause();
         deactivate();
         firstFix = false;
@@ -151,7 +151,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
                 LatLng location = new LatLng(aMapLocation.getLatitude(),aMapLocation.getLongitude());
                 if(!firstFix){
                     firstFix = true;
-                    addCircle(location,aMapLocation.getAccuracy());//添加定位精度圆
+                    //addCircle(location,aMapLocation.getAccuracy());//添加定位精度圆
                     addMarker(location);//添加定位图标
                     sensorEventHelper.setCurrentMarker(Locmarker);   //定位图标旋转
                 }else {
