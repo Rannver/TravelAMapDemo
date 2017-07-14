@@ -105,6 +105,11 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     }
 
     @Override
+    public void initEndPoint() {
+
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mapview.onDestroy();

@@ -17,7 +17,8 @@
             android:value="@string/map_key"
             ></meta-data>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".view.activity.PoiSearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

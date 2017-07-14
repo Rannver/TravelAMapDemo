@@ -14,5 +14,4 @@ public class MapModel {
     public MapModel(MapContract.MapPresenter mapPresenter){
         this.mapPresenter = mapPresenter;
     }
-
 }
