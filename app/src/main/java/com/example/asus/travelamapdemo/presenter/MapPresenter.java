@@ -1,6 +1,7 @@
 package com.example.asus.travelamapdemo.presenter;
 
 
+import com.amap.api.services.core.LatLonPoint;
 import com.example.asus.travelamapdemo.contract.MapContract;
 import com.example.asus.travelamapdemo.model.MapModel;
 
@@ -21,7 +22,13 @@ public class MapPresenter implements MapContract.MapPresenter{
 
     @Override
     public void initView() {
+        mapView.initView();
         mapView.initMap();
+    }
+
+    @Override
+    public void setSearchMarkerPoint(LatLonPoint point) {
+        mapView.initMarkerBySearch(point);
     }
 
     @Override

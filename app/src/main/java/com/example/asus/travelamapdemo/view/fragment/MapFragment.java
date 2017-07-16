@@ -1,16 +1,16 @@
 package com.example.asus.travelamapdemo.view.fragment;
 
-import android.app.Application;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -27,10 +27,14 @@ import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.amap.api.services.core.LatLonPoint;
+import com.example.asus.travelamapdemo.MainActivity;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.contract.MapContract;
+import com.example.asus.travelamapdemo.contract.PoiSearchContract;
+import com.example.asus.travelamapdemo.presenter.PoiSearchPresenter;
 import com.example.asus.travelamapdemo.util.SensorEventHelper;
-
+import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,11 +46,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by ASUS on 2017/7/11.
  */
 
-public class MapFragment extends Fragment implements MapContract.MapView,LocationSource,AMapLocationListener {
+public class MapFragment extends Fragment implements MapContract.MapView, LocationSource, AMapLocationListener {
 
     Unbinder unbinder;
     @BindView(R.id.mapview)
     MapView mapview;
+    @BindView(R.id.searchview_map)
+    SearchView searchviewMap;
 
     private String TAG = "MapFragment";
     private View view;
@@ -59,6 +65,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     private boolean firstFix = false;
     private Marker Locmarker;
     private Circle circle;
+    private Marker marker;
 
 
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
@@ -86,11 +93,22 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     }
 
 
+    @Override
+    public void initView() {
+        searchviewMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PoiSearchActivity.class);
+                getActivity().startActivityForResult(intent, MainActivity.INTENT_ACTIVITY_BY_POISEARCH);
+            }
+        });
+    }
+
     //设置amap的一些属性
     @Override
     public void initMap() {
 
-        if(aMap==null){
+        if (aMap == null) {
             aMap = mapview.getMap();
         }
         aMap.setLocationSource(this);
@@ -98,7 +116,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
         aMap.setMyLocationEnabled(true);
 
         sensorEventHelper = new SensorEventHelper(getContext());
-        if (sensorEventHelper!=null){
+        if (sensorEventHelper != null) {
             sensorEventHelper.registerSensorListener();
         }
 
@@ -110,12 +128,30 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     }
 
     @Override
+    public void initMarkerBySearch(LatLonPoint point) {
+        if (marker!=null){
+            marker.destroy();
+        }
+        LatLng latLng = new LatLng(point.getLatitude(),point.getLongitude());
+        marker = aMap.addMarker(new MarkerOptions().position(latLng));
+        aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+        aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //dialog puls
+                
+                return false;
+            }
+        });
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mapview.onDestroy();
         unbinder.unbind();
 
-        if(locationClient!=null){
+        if (locationClient != null) {
             locationClient.onDestroy();
         }
     }
@@ -124,7 +160,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     public void onResume() {
         super.onResume();
         mapview.onResume();
-        if (sensorEventHelper!=null){
+        if (sensorEventHelper != null) {
             sensorEventHelper.registerSensorListener();
         }
     }
@@ -150,23 +186,23 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        System.out.println(TAG+":"+"listener = "+listener+",location = "+aMapLocation);
-        if(listener!=null&&aMapLocation!=null){
-            if(aMapLocation!=null&&aMapLocation.getErrorCode()==0){
-                LatLng location = new LatLng(aMapLocation.getLatitude(),aMapLocation.getLongitude());
-                if(!firstFix){
+        System.out.println(TAG + ":" + "listener = " + listener + ",location = " + aMapLocation);
+        if (listener != null && aMapLocation != null) {
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+                LatLng location = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                if (!firstFix) {
                     firstFix = true;
                     //addCircle(location,aMapLocation.getAccuracy());//添加定位精度圆
                     addMarker(location);//添加定位图标
                     sensorEventHelper.setCurrentMarker(Locmarker);   //定位图标旋转
-                }else {
+                } else {
                     circle.setCenter(location);
                     circle.setRadius(aMapLocation.getAccuracy());
                     Locmarker.setPosition(location);
                 }
-                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,18));
-            }else {
-                System.out.println(TAG+":"+"errorcode = "+aMapLocation.getErrorCode()+","+aMapLocation.getLocationDetail());
+                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18));
+            } else {
+                System.out.println(TAG + ":" + "errorcode = " + aMapLocation.getErrorCode() + "," + aMapLocation.getLocationDetail());
             }
         }
     }
@@ -175,7 +211,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         listener = onLocationChangedListener;
-        if(locationClient==null){
+        if (locationClient == null) {
             locationClient = new AMapLocationClient(getContext());
             locationClientOption = new AMapLocationClientOption();
             //设置定位监听
@@ -192,7 +228,7 @@ public class MapFragment extends Fragment implements MapContract.MapView,Locatio
     @Override
     public void deactivate() {
         listener = null;
-        if(locationClient!=null){
+        if (locationClient != null) {
             locationClient.stopLocation();
             locationClient.onDestroy();
         }

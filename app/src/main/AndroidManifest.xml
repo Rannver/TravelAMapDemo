@@ -17,14 +17,14 @@
             android:value="@string/map_key"
             ></meta-data>
 
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".view.activity.PoiSearchActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.activity.PoiSearchActivity"></activity>
 
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService"></service>

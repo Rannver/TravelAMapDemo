@@ -31,7 +31,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-
     compile 'com.jakewharton:butterknife:8.7.0'
     compile 'com.jakewharton:butterknife-compiler:8.7.0'
     compile 'it.sephiroth.android.library.picasso:picasso:2.5.2.4b'
@@ -41,4 +40,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
     compile 'com.android.support:design:26.0.0-alpha1'
     compile files('libs/AMap2DMap_5.2.0_AMapSearch_5.2.1_AMapLocation_3.4.1_20170630.jar')
+    compile 'com.orhanobut:dialogplus:1.11'
 }

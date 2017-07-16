@@ -2,6 +2,7 @@ package com.example.asus.travelamapdemo.presenter;
 
 import android.content.Context;
 
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.example.asus.travelamapdemo.contract.PoiSearchContract;
 import com.example.asus.travelamapdemo.model.PoiSearchModel;
@@ -18,9 +19,6 @@ public class PoiSearchPresenter implements PoiSearchContract.PoiSearchPresenter 
     private PoiSearchContract.PoiSearchView poiSearchView;
 
     private List<PoiItem> poilist;
-
-    public final static int FLAG_ENDPOINT_BY_TEAM = 1;
-    public final static int FLAG_ENDPOINT_BY_INPUT = 2;
 
     public PoiSearchPresenter(PoiSearchContract.PoiSearchView poiSearchView){
         this.poiSearchView = poiSearchView;
@@ -39,13 +37,18 @@ public class PoiSearchPresenter implements PoiSearchContract.PoiSearchPresenter 
     }
 
     @Override
-    public void poiSearch(String str,int flag) {
-        poiSearchModel.doSearchQuery(str,flag);
+    public void poiSearch(String str) {
+        poiSearchModel.doSearchQuery(str);
     }
 
     @Override
-    public void GeocodeSearch(String name,String city) {
+    public void GeocodeSearch(String name, String city) {
         poiSearchModel.doGeocodeQuery(name,city);
+    }
+
+    @Override
+    public void GeocodeSearchOK(LatLonPoint point) {
+        poiSearchView.AmapIntent(point);
     }
 
     @Override

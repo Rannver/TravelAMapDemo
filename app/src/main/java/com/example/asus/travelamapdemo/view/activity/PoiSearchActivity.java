@@ -1,6 +1,7 @@
 package com.example.asus.travelamapdemo.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,11 +11,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.example.asus.travelamapdemo.MainActivity;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.adpter.PoiListAdpter;
 import com.example.asus.travelamapdemo.contract.PoiSearchContract;
 import com.example.asus.travelamapdemo.presenter.PoiSearchPresenter;
+import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
 
 import java.util.List;
 
@@ -37,6 +41,10 @@ public class PoiSearchActivity extends AppCompatActivity implements PoiSearchCon
     private PoiSearchContract.PoiSearchPresenter presenter;
 
     private static String TAG = "PoiSearchActivity";
+    public final static int FLAG_ENDPOINT_BY_TEAM = 1;
+    public final static int FLAG_ENDPOINT_BY_INPUT = 2;
+    public final static String POINT_LATITUDE = "v";
+    public final static String POINT_LONGTITUDE = "vl";
 
 
 
@@ -73,7 +81,7 @@ public class PoiSearchActivity extends AppCompatActivity implements PoiSearchCon
             public boolean onQueryTextChange(String newText) {
                 System.out.println(TAG+":"+newText);
                 if(newText!=null){
-                    presenter.poiSearch(newText,PoiSearchPresenter.FLAG_ENDPOINT_BY_INPUT);
+                    presenter.poiSearch(newText);
                 }
                 return false;
             }
@@ -93,6 +101,16 @@ public class PoiSearchActivity extends AppCompatActivity implements PoiSearchCon
         });
         poilist.setAdapter(adpter);
         poilist.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+    }
+
+    @Override
+    public void AmapIntent(LatLonPoint point) {
+        //存入单例
+        LocationInfoSingleton singleton = LocationInfoSingleton.getInfoSingleton();
+        singleton.setPoint(point);
+        setResult(MainActivity.INTENT_ACTIVITY_BY_POISEARCH);
+        finish();
+
     }
 
     @Override

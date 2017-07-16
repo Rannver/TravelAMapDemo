@@ -22,7 +22,6 @@ import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
 public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSearch.OnGeocodeSearchListener{
 
     private PoiSearchContract.PoiSearchPresenter poiSearchPresenter;
-    private int flag;
 
     private static String AMAP_POI_CODE_TRAVEL = "110200";
     private static String TAG = "PoiSearchModel";
@@ -31,8 +30,7 @@ public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSear
         this.poiSearchPresenter = poiSearchPresenter;
     }
 
-    public void doSearchQuery(String str,int flag){
-        this.flag = flag;
+    public void doSearchQuery(String str){
         PoiSearch.Query query = new PoiSearch.Query(str,AMAP_POI_CODE_TRAVEL,"");//第三参数默认为空，全国范围内搜索
         PoiSearch poiSearch = new PoiSearch(poiSearchPresenter.getView(),query);
         poiSearch.setOnPoiSearchListener(this);
@@ -53,15 +51,7 @@ public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSear
     public void onPoiSearched(PoiResult poiResult, int i) {
         if (i == AMapException.CODE_AMAP_SUCCESS){
             if ((poiResult!=null&&poiResult.getQuery()!=null)&&poiResult.getPois().size()!=0){
-                switch (flag){
-                    //从团队获取目的地
-                    case PoiSearchPresenter.FLAG_ENDPOINT_BY_TEAM:
-                        break;
-                    //手动输入目的地
-                    case PoiSearchPresenter.FLAG_ENDPOINT_BY_INPUT:
-                        poiSearchPresenter.setList(poiResult.getPois());
-                        break;
-                }
+                poiSearchPresenter.setList(poiResult.getPois());
             }else {
                 Toast.makeText(poiSearchPresenter.getView(),"查询结果为空，请检查输入的关键词",Toast.LENGTH_SHORT).show();
             }
@@ -82,7 +72,8 @@ public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSear
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
         if(i==AMapException.CODE_AMAP_SUCCESS){
             if(geocodeResult!=null&&geocodeResult.getGeocodeAddressList()!=null&&geocodeResult.getGeocodeAddressList().size()>0){
-                //System.out.println(TAG+":"+geocodeResult.getGeocodeAddressList().get(0).getLatLonPoint());
+//                System.out.println(TAG+":"+geocodeResult.getGeocodeAddressList().get(0).getLatLonPoint());
+                poiSearchPresenter.GeocodeSearchOK(geocodeResult.getGeocodeAddressList().get(0).getLatLonPoint());
             }
         }
     }
