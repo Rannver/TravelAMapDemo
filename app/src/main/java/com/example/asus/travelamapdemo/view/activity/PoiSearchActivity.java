@@ -41,10 +41,7 @@ public class PoiSearchActivity extends AppCompatActivity implements PoiSearchCon
     private PoiSearchContract.PoiSearchPresenter presenter;
 
     private static String TAG = "PoiSearchActivity";
-    public final static int FLAG_ENDPOINT_BY_TEAM = 1;
-    public final static int FLAG_ENDPOINT_BY_INPUT = 2;
-    public final static String POINT_LATITUDE = "v";
-    public final static String POINT_LONGTITUDE = "vl";
+    public final static int FLAG_INTENT_BY_MAY = 1;
 
 
 

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +33,10 @@ import com.amap.api.services.core.LatLonPoint;
 import com.example.asus.travelamapdemo.MainActivity;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.contract.MapContract;
-import com.example.asus.travelamapdemo.contract.PoiSearchContract;
-import com.example.asus.travelamapdemo.presenter.PoiSearchPresenter;
 import com.example.asus.travelamapdemo.util.SensorEventHelper;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.ViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,6 +101,7 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PoiSearchActivity.class);
+                intent.putExtra("flag",PoiSearchActivity.FLAG_INTENT_BY_MAY);
                 getActivity().startActivityForResult(intent, MainActivity.INTENT_ACTIVITY_BY_POISEARCH);
             }
         });
@@ -138,8 +141,16 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
         aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                Log.d(TAG,"onMarkerClick");
                 //dialog puls
-                
+                ViewHolder holder = new ViewHolder(R.layout.dialog_map);
+                DialogPlus dialogPlus = DialogPlus.newDialog(getContext())
+                        .setFooter(R.layout.dialog_footer)
+                        .setContentHolder(holder)
+                        .setGravity(Gravity.BOTTOM)
+                        .create();
+                dialogPlus.show();
+                View view = dialogPlus.getFooterView();
                 return false;
             }
         });

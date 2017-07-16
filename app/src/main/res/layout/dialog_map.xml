@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text_color"
+            android:id="@+id/text_name"
+            android:textSize="16sp"
+            android:text="中南民族大学"
+            android:paddingLeft="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/second_text_color"
+            android:id="@+id/text_description"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="武汉市洪山区中南民族大学"
+            android:layout_marginLeft="16dp"
+            />
+    </LinearLayout>
+
+
+
+</LinearLayout>
