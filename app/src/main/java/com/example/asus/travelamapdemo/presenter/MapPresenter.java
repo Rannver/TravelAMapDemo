@@ -1,9 +1,14 @@
 package com.example.asus.travelamapdemo.presenter;
 
 
+import android.content.Context;
+
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.route.DrivePath;
 import com.example.asus.travelamapdemo.contract.MapContract;
 import com.example.asus.travelamapdemo.model.MapModel;
+
+import java.util.List;
 
 import static android.R.attr.name;
 
@@ -36,7 +41,17 @@ public class MapPresenter implements MapContract.MapPresenter{
 
     @Override
     public void dosearchResult(LatLonPoint start, LatLonPoint end) {
+        mapModel.DriveRouteQuery(start,end);
+    }
 
+    @Override
+    public void setPathList(List<DrivePath> list) {
+        mapView.showDrivePathList(list);
+    }
+
+    @Override
+    public Context getContext() {
+        return mapView.getMapContext();
     }
 
     @Override

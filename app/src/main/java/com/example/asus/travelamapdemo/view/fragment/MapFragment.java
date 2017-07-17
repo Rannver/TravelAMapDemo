@@ -35,6 +35,7 @@ import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.route.DrivePath;
 import com.example.asus.travelamapdemo.MainActivity;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.adpter.MapDialogAdpter;
@@ -43,7 +44,8 @@ import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
 import com.example.asus.travelamapdemo.util.SensorEventHelper;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.ViewHolder;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -210,6 +212,18 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
     }
 
     @Override
+    public void showDrivePathList(List<DrivePath> list) {
+        View head = LayoutInflater.from(context).inflate(R.layout.dialog_head,viewGroup,false);
+
+    }
+
+
+    @Override
+    public Context getMapContext() {
+        return context;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mapview.onDestroy();
@@ -271,6 +285,7 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
         }
     }
 
+
     //激活定位
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
@@ -299,6 +314,8 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
         locationClient = null;
     }
 
+
+
     private void addCircle(LatLng latlng, double radius) {
         CircleOptions options = new CircleOptions();
         options.strokeWidth(1f);
@@ -323,5 +340,6 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
         options.anchor(0.5f, 0.5f);
         options.position(latlng);
         Locmarker = aMap.addMarker(options);
+        dialogAdpter.setStartMaker(Locmarker);
     }
 }

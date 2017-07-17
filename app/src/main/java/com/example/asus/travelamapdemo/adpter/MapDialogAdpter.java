@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps2d.model.Marker;
+import com.amap.api.services.core.LatLonPoint;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.contract.MapContract;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -23,6 +24,7 @@ public class MapDialogAdpter {
     private Context context;
     private MapContract.MapPresenter presenter;
     private Marker marker;
+    private Marker startMaker;
     private boolean endFlag = false;
     private DialogPlus dialogPlus;
 
@@ -71,8 +73,22 @@ public class MapDialogAdpter {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: btuRoad");
+                if (marker!=null&&startMaker!=null){
+                    LatLonPoint start = new LatLonPoint(startMaker.getPosition().latitude,startMaker.getPosition().longitude);
+                    LatLonPoint end = new LatLonPoint(marker.getPosition().latitude,startMaker.getPosition().longitude);
+                    presenter.dosearchResult(start,end);
+                    dialogPlus.dismiss();
+                }else {
+                    Toast.makeText(context,"定位中，请稍后再试",Toast.LENGTH_SHORT).show();
+                    dialogPlus.dismiss();
+                }
             }
         });
+    }
+
+    public void setHead(View head,String name){
+        TextView text_head = (TextView) head.findViewById(R.id.text_dialog_head);
+        text_head.setText("至"+name);
     }
 
     public void setEndFlag(boolean endFlag){
@@ -85,5 +101,9 @@ public class MapDialogAdpter {
 
     public void setMarker(Marker marker) {
         this.marker = marker;
+    }
+
+    public void setStartMaker(Marker startMaker) {
+        this.startMaker = startMaker;
     }
 }
