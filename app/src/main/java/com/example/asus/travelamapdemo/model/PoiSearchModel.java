@@ -14,6 +14,7 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.example.asus.travelamapdemo.contract.PoiSearchContract;
 import com.example.asus.travelamapdemo.presenter.PoiSearchPresenter;
 import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
+import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 
 /**
  * Created by ASUS on 2017/7/13.
@@ -30,8 +31,16 @@ public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSear
         this.poiSearchPresenter = poiSearchPresenter;
     }
 
-    public void doSearchQuery(String str){
-        PoiSearch.Query query = new PoiSearch.Query(str,AMAP_POI_CODE_TRAVEL,"");//第三参数默认为空，全国范围内搜索
+    public void doSearchQuery(String str,int flag){
+        PoiSearch.Query query = null;
+        switch (flag){
+            case PoiSearchActivity.FLAG_INTENT_BY_MAP:
+                query = new PoiSearch.Query(str,"","");//地址搜索，第三参数默认为空，全国范围内搜索
+                break;
+            case PoiSearchActivity.FLAG_INTENT_BY_TEAM:
+                query = new PoiSearch.Query(str,AMAP_POI_CODE_TRAVEL,"");//景区搜索第三参数默认为空，全国范围内搜索
+                break;
+        }
         PoiSearch poiSearch = new PoiSearch(poiSearchPresenter.getView(),query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.searchPOIAsyn();

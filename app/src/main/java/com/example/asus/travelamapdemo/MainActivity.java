@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private void initFragment() {
         fragmentManger = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManger.beginTransaction();
-        mapFragment = new MapFragment();
+        mapFragment = new MapFragment(this);
         transaction.add(R.id.framelayout, mapFragment);
         mapPresenter = new MapPresenter(mapFragment);
         Log.d("MainActivity", "creat mapFragment");
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case INTENT_ACTIVITY_BY_POISEARCH:
                 LocationInfoSingleton singleton = LocationInfoSingleton.getInfoSingleton();
-                mapPresenter.setSearchMarkerPoint(singleton.getPoint());
+                mapPresenter.setSearchMarkerPoint(singleton.getPoint(),singleton.getName(),singleton.getDes());
 //                System.out.println(TAG+":"+singleton.getPoint());
                 break;
         }

@@ -19,6 +19,8 @@ public class PoiSearchPresenter implements PoiSearchContract.PoiSearchPresenter 
     private PoiSearchContract.PoiSearchView poiSearchView;
 
     private List<PoiItem> poilist;
+    private PoiItem poiItem;
+    private int flag;
 
     public PoiSearchPresenter(PoiSearchContract.PoiSearchView poiSearchView){
         this.poiSearchView = poiSearchView;
@@ -37,18 +39,19 @@ public class PoiSearchPresenter implements PoiSearchContract.PoiSearchPresenter 
     }
 
     @Override
-    public void poiSearch(String str) {
-        poiSearchModel.doSearchQuery(str);
+    public void poiSearch(String str,int flag) {
+        poiSearchModel.doSearchQuery(str,flag);
     }
 
     @Override
-    public void GeocodeSearch(String name, String city) {
-        poiSearchModel.doGeocodeQuery(name,city);
+    public void GeocodeSearch(PoiItem poiItem) {
+        poiSearchModel.doGeocodeQuery(poiItem.getTitle(),poiItem.getCityName());
+        this.poiItem = poiItem;
     }
 
     @Override
     public void GeocodeSearchOK(LatLonPoint point) {
-        poiSearchView.AmapIntent(point);
+        poiSearchView.AmapIntent(point,poiItem);
     }
 
     @Override

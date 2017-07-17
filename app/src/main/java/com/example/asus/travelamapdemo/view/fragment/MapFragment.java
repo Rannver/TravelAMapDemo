@@ -1,5 +1,6 @@
 package com.example.asus.travelamapdemo.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -32,6 +36,7 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.services.core.LatLonPoint;
 import com.example.asus.travelamapdemo.MainActivity;
 import com.example.asus.travelamapdemo.R;
+import com.example.asus.travelamapdemo.adpter.MapDialogAdpter;
 import com.example.asus.travelamapdemo.contract.MapContract;
 import com.example.asus.travelamapdemo.util.SensorEventHelper;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
@@ -73,6 +78,8 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
 
+    private Context context;
+    private ViewGroup viewGroup;
 
     @Nullable
     @Override
@@ -83,10 +90,15 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
         mapview.onCreate(savedInstanceState);
         aMap = mapview.getMap();
 
+        viewGroup=container;
         presenter.start();
 
 
         return view;
+    }
+
+    public MapFragment(Context context){
+        this.context=context;
     }
 
     @Override
@@ -101,7 +113,7 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PoiSearchActivity.class);
-                intent.putExtra("flag",PoiSearchActivity.FLAG_INTENT_BY_MAY);
+                intent.putExtra("flag",PoiSearchActivity.FLAG_INTENT_BY_MAP);
                 getActivity().startActivityForResult(intent, MainActivity.INTENT_ACTIVITY_BY_POISEARCH);
             }
         });
@@ -131,26 +143,37 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
     }
 
     @Override
-    public void initMarkerBySearch(LatLonPoint point) {
+    public void initMarkerBySearch(final LatLonPoint point, final String name, final String des) {
         if (marker!=null){
             marker.destroy();
         }
-        LatLng latLng = new LatLng(point.getLatitude(),point.getLongitude());
+        final LatLng latLng = new LatLng(point.getLatitude(),point.getLongitude());
         marker = aMap.addMarker(new MarkerOptions().position(latLng));
         aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+        setMarkerOnclickListener(latLng,name,des);
+    }
+
+    @Override
+    public void setMarkerOnclickListener(final LatLng latLng, final String name, final String des) {
         aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Log.d(TAG,"onMarkerClick");
                 //dialog puls
-                ViewHolder holder = new ViewHolder(R.layout.dialog_map);
-                DialogPlus dialogPlus = DialogPlus.newDialog(getContext())
-                        .setFooter(R.layout.dialog_footer)
-                        .setContentHolder(holder)
-                        .setGravity(Gravity.BOTTOM)
-                        .create();
-                dialogPlus.show();
-                View view = dialogPlus.getFooterView();
+                if(marker.getPosition().equals(latLng)){
+                    View view =LayoutInflater.from(context).inflate(R.layout.dialog_map,viewGroup,false);
+                    View footer =LayoutInflater.from(context).inflate(R.layout.dialog_footer,viewGroup,false);
+                    MapDialogAdpter dialogAdpter = new MapDialogAdpter();
+
+                    DialogPlus dialogPlus = DialogPlus.newDialog(context)
+                            .setFooter(footer)
+                            .setContentHolder(dialogAdpter.getViewHolder(view,name,des))
+                            .setGravity(Gravity.BOTTOM)
+                            .create();
+                    dialogPlus.show();
+
+                    dialogAdpter.setFooter(dialogPlus.getFooterView());
+                }
+
                 return false;
             }
         });

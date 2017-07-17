@@ -1,6 +1,7 @@
 package com.example.asus.travelamapdemo.contract;
 
 
+import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
 import com.example.asus.travelamapdemo.BasePresenter;
 import com.example.asus.travelamapdemo.BaseView;
@@ -19,13 +20,15 @@ public interface MapContract {
 
         void initEndPoint();//设置终点Marker
 
-        void initMarkerBySearch(LatLonPoint point);//设置手动添加的Marker
+        void initMarkerBySearch(LatLonPoint point,String name,String des);//设置手动添加的Marker
+
+        void setMarkerOnclickListener(LatLng latLng,String name,String des);
     }
 
     interface MapPresenter extends BasePresenter {
 
         void initView();
 
-        void setSearchMarkerPoint(LatLonPoint point);
+        void setSearchMarkerPoint(LatLonPoint point,String name,String des);
     }
 }
