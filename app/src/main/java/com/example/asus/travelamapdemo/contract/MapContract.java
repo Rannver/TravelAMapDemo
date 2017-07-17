@@ -30,5 +30,7 @@ public interface MapContract {
         void initView();
 
         void setSearchMarkerPoint(LatLonPoint point,String name,String des);
+
+        void dosearchResult(LatLonPoint start,LatLonPoint end);
     }
 }

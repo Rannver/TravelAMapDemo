@@ -34,10 +34,12 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.PoiItem;
 import com.example.asus.travelamapdemo.MainActivity;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.adpter.MapDialogAdpter;
 import com.example.asus.travelamapdemo.contract.MapContract;
+import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
 import com.example.asus.travelamapdemo.util.SensorEventHelper;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -73,6 +75,8 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
     private Marker Locmarker;
     private Circle circle;
     private Marker marker;
+    private Marker endMarker;
+    private MapDialogAdpter dialogAdpter;
 
 
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
@@ -135,12 +139,34 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
             sensorEventHelper.registerSensorListener();
         }
 
+        dialogAdpter = new MapDialogAdpter(context,presenter);
+
     }
 
     @Override
     public void initEndPoint() {
+        if(endMarker!=null){
+            endMarker.destroy();
+        }
+        LocationInfoSingleton singleton = LocationInfoSingleton.getInfoSingleton();
+        if (singleton.getEndPoint()!=null){
+            LatLonPoint latLonPoint = singleton.getEndPoint();
+            final LatLng latLng = new LatLng(latLonPoint.getLatitude(),latLonPoint.getLongitude());
+            Bitmap bMap = BitmapFactory.decodeResource(this.getResources(),
+                    R.drawable.ic_endpoint);
 
+            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bMap);
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.draggable(false);
+            markerOptions.icon(bitmapDescriptor);
+            markerOptions.position(latLng);
+            endMarker = aMap.addMarker(markerOptions);
+            setMarkerOnclickListener(latLng,singleton.getEndName(),singleton.getEndDes());
+        }
     }
+
+
 
     @Override
     public void initMarkerBySearch(final LatLonPoint point, final String name, final String des) {
@@ -162,7 +188,10 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
                 if(marker.getPosition().equals(latLng)){
                     View view =LayoutInflater.from(context).inflate(R.layout.dialog_map,viewGroup,false);
                     View footer =LayoutInflater.from(context).inflate(R.layout.dialog_footer,viewGroup,false);
-                    MapDialogAdpter dialogAdpter = new MapDialogAdpter();
+                    dialogAdpter.setMarker(marker);
+                    if (marker==endMarker){
+                        dialogAdpter.setEndFlag(true);
+                    }
 
                     DialogPlus dialogPlus = DialogPlus.newDialog(context)
                             .setFooter(footer)
@@ -171,6 +200,7 @@ public class MapFragment extends Fragment implements MapContract.MapView, Locati
                             .create();
                     dialogPlus.show();
 
+                    dialogAdpter.setDialogPlus(dialogPlus);
                     dialogAdpter.setFooter(dialogPlus.getFooterView());
                 }
 

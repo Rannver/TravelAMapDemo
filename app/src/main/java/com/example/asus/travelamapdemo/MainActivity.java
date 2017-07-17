@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 LocationInfoSingleton singleton = LocationInfoSingleton.getInfoSingleton();
                 mapPresenter.setSearchMarkerPoint(singleton.getPoint(),singleton.getName(),singleton.getDes());
 //                System.out.println(TAG+":"+singleton.getPoint());
+
                 break;
         }
     }

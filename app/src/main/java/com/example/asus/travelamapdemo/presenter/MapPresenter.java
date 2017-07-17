@@ -26,6 +26,7 @@ public class MapPresenter implements MapContract.MapPresenter{
     public void initView() {
         mapView.initView();
         mapView.initMap();
+        mapView.initEndPoint();
     }
 
     @Override
@@ -33,6 +34,10 @@ public class MapPresenter implements MapContract.MapPresenter{
         mapView.initMarkerBySearch(point,name,des);
     }
 
+    @Override
+    public void dosearchResult(LatLonPoint start, LatLonPoint end) {
+
+    }
 
     @Override
     public void start() {
