@@ -2,9 +2,11 @@ package com.example.asus.travelamapdemo.presenter;
 
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
+import com.amap.api.services.route.DriveRouteResult;
 import com.example.asus.travelamapdemo.contract.MapContract;
 import com.example.asus.travelamapdemo.model.MapModel;
 
@@ -40,18 +42,33 @@ public class MapPresenter implements MapContract.MapPresenter{
     }
 
     @Override
-    public void dosearchResult(LatLonPoint start, LatLonPoint end) {
-        mapModel.DriveRouteQuery(start,end);
+    public void dosearchResult(LatLonPoint start, LatLonPoint end,boolean isEnd) {
+        mapModel.DriveRouteQuery(start,end,isEnd);
     }
 
     @Override
-    public void setPathList(List<DrivePath> list) {
-        mapView.showDrivePathList(list);
+    public void setPathList(DriveRouteResult result,boolean isEnd) {
+        mapView.showDrivePathList(result,isEnd);
+    }
+
+    @Override
+    public void setPathLine(LatLonPoint start, LatLonPoint end, DrivePath path,boolean isEnd) {
+        mapView.showPathLine(start,end,path,isEnd);
+    }
+
+    @Override
+    public void CancelPathLine() {
+        mapView.CancelPathLine();
     }
 
     @Override
     public Context getContext() {
         return mapView.getMapContext();
+    }
+
+    @Override
+    public ViewGroup getViewGroup() {
+        return mapView.getViewGroup();
     }
 
     @Override

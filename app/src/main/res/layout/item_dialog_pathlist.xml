@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="8dp">
+    android:paddingTop="8dp"
+    android:paddingBottom="16dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,12 +17,19 @@
         android:textSize="14sp"
         android:text="" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_dlg_liststep"
+        android:textColor="@color/second_text_color"
+        android:textSize="12sp"
+        android:layout_marginTop="2dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp"
-        android:paddingBottom="7dp">
+        android:layout_marginTop="2dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,13 +37,13 @@
             android:id="@+id/text_dlg_listDistance"
             android:textSize="12sp"
             android:textColor="@color/md_blue_400"
-            android:gravity="left|center"/>
+            android:gravity="left|center"
+            android:layout_marginRight="8dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/text_dlg_listInfo"
-            android:layout_marginLeft="8dp"
             android:textColor="@color/second_text_color"
             android:textSize="12sp"
             />

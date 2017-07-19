@@ -22,6 +22,7 @@ public class MapModel implements RouteSearch.OnRouteSearchListener{
     private MapContract.MapPresenter mapPresenter;
     private ProgressDialog progressDialog;
     private RouteSearch routeSearch;
+    private boolean isEnd = false;
 
     private static String TAG = "MapModel";
 
@@ -29,15 +30,14 @@ public class MapModel implements RouteSearch.OnRouteSearchListener{
         this.mapPresenter = mapPresenter;
     }
 
-    public void DriveRouteQuery(LatLonPoint start,LatLonPoint end){
+    public void DriveRouteQuery(LatLonPoint start,LatLonPoint end,boolean isEnd){
         showProgress();
+        this.isEnd = isEnd;
         RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(start,end);
         RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo,RouteSearch.DRIVING_MULTI_CHOICE_AVOID_CONGESTION,null,null,"");
         routeSearch = new RouteSearch(mapPresenter.getContext());
         routeSearch.setRouteSearchListener(this);
         routeSearch.calculateDriveRouteAsyn(query);//异步规划驾车路线
-
-
     }
 
     public void showProgress(){
@@ -74,12 +74,7 @@ public class MapModel implements RouteSearch.OnRouteSearchListener{
         if (i == AMapException.CODE_AMAP_SUCCESS){
             if(driveRouteResult!=null&&driveRouteResult.getPaths()!=null){
                 if (driveRouteResult.getPaths().size()>0){
-                    mapPresenter.setPathList(driveRouteResult.getPaths());
-                    System.out.println(TAG+":"+driveRouteResult.getPaths().size());
-                    System.out.println(TAG+":"+driveRouteResult.getPaths().get(0).getSteps());
-                    System.out.println(TAG+":"+driveRouteResult.getPaths().get(0).getStrategy());
-                    System.out.println(TAG+":"+driveRouteResult.getPaths().get(0).getTollDistance());
-                    System.out.println(TAG+":"+driveRouteResult.getPaths().get(0).getTolls());
+                    mapPresenter.setPathList(driveRouteResult,isEnd);
                 }else {
                     Log.d(TAG, "onDriveRouteSearched: 未搜寻到合适的驾车路线");
                 }

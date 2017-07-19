@@ -50,7 +50,20 @@ public class MapDialogAdpter {
 
     }
 
-    public void setFooter(View footer){
+    public ViewHolder getRouteViewHolder(View view,String action,String road,String des){
+
+        TextView textName;
+        TextView textDes;
+        textName = (TextView) view.findViewById(R.id.text_dlg_name);
+        textDes = (TextView) view.findViewById(R.id.text_dlg_description);
+
+        textName.setText(des);
+        textDes.setText("拐弯方向："+action+"  前方道路："+road);
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
+    }
+
+    public void setFooter(View footer, final boolean drawFlag){
         Button btuCancel;
         Button btuRoad;
         btuCancel  = (Button) footer.findViewById(R.id.btu_cancel);
@@ -60,8 +73,11 @@ public class MapDialogAdpter {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: btuCancel");
                 if (!endFlag){
-                    marker.destroy();
+                    if (drawFlag){
+                        presenter.CancelPathLine();
+                    }
                     dialogPlus.dismiss();
+                    marker.destroy();
                 }else {
                     Toast.makeText(context,"这是目的地不能取消标记的噢~",Toast.LENGTH_SHORT).show();
                     dialogPlus.dismiss();
@@ -76,7 +92,7 @@ public class MapDialogAdpter {
                 if (marker!=null&&startMaker!=null){
                     LatLonPoint start = new LatLonPoint(startMaker.getPosition().latitude,startMaker.getPosition().longitude);
                     LatLonPoint end = new LatLonPoint(marker.getPosition().latitude,startMaker.getPosition().longitude);
-                    presenter.dosearchResult(start,end);
+                    presenter.dosearchResult(start,end,false);
                     dialogPlus.dismiss();
                 }else {
                     Toast.makeText(context,"定位中，请稍后再试",Toast.LENGTH_SHORT).show();
@@ -86,9 +102,19 @@ public class MapDialogAdpter {
         });
     }
 
+    public void setRouteFoot(View footer, final DialogPlus dialogPlus){
+        Button btuOk = (Button) footer.findViewById(R.id.btu_routeOK);
+        btuOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogPlus.dismiss();
+            }
+        });
+    }
+
     public void setHead(View head,String name){
         TextView text_head = (TextView) head.findViewById(R.id.text_dialog_head);
-        text_head.setText("至"+name);
+        text_head.setText("为您搜索到以下路线（至"+name+"）");
     }
 
     public void setEndFlag(boolean endFlag){
@@ -106,4 +132,6 @@ public class MapDialogAdpter {
     public void setStartMaker(Marker startMaker) {
         this.startMaker = startMaker;
     }
+
+
 }

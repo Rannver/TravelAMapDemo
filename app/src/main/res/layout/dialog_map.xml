@@ -16,9 +16,10 @@
             android:textColor="@color/primary_text_color"
             android:id="@+id/text_dlg_name"
             android:textSize="16sp"
-            android:paddingLeft="16dp"
             android:paddingTop="4dp"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="4dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +27,8 @@
             android:id="@+id/text_dlg_description"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
             />
     </LinearLayout>
 

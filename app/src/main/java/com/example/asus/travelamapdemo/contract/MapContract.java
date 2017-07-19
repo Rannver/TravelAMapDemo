@@ -2,10 +2,12 @@ package com.example.asus.travelamapdemo.contract;
 
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
+import com.amap.api.services.route.DriveRouteResult;
 import com.example.asus.travelamapdemo.BasePresenter;
 import com.example.asus.travelamapdemo.BaseView;
 
@@ -29,9 +31,15 @@ public interface MapContract {
 
         void setMarkerOnclickListener(LatLng latLng,String name,String des);
 
-        void showDrivePathList(List<DrivePath> list);//显示驾车路径列表
+        void showDrivePathList(DriveRouteResult result,boolean isEnd);//显示驾车路径列表
+
+        void showPathLine(LatLonPoint start,LatLonPoint end,DrivePath path,boolean isEnd);//显示选择路线
+
+        void CancelPathLine();//取消路线显示
 
         Context getMapContext();
+
+        ViewGroup getViewGroup();
     }
 
     interface MapPresenter extends BasePresenter {
@@ -40,10 +48,16 @@ public interface MapContract {
 
         void setSearchMarkerPoint(LatLonPoint point,String name,String des);
 
-        void dosearchResult(LatLonPoint start,LatLonPoint end);
+        void dosearchResult(LatLonPoint start,LatLonPoint end,boolean isEnd);
 
-        void setPathList(List<DrivePath> list);
+        void setPathList(DriveRouteResult result,boolean isEnd);
+
+        void setPathLine(LatLonPoint start,LatLonPoint end,DrivePath path,boolean isEnd);//显示选择路线
+
+        void CancelPathLine();//取消路线显示
 
         Context getContext();
+
+        ViewGroup getViewGroup();
     }
 }
