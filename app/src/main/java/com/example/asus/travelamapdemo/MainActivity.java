@@ -10,10 +10,13 @@ import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.amap.api.services.core.LatLonPoint;
+import com.example.asus.travelamapdemo.contract.RecommendContract;
 import com.example.asus.travelamapdemo.presenter.MapPresenter;
+import com.example.asus.travelamapdemo.presenter.RecommendPresenter;
 import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 import com.example.asus.travelamapdemo.view.fragment.MapFragment;
+import com.example.asus.travelamapdemo.view.fragment.RecommendFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManger;
     private MapFragment mapFragment;
     private MapPresenter mapPresenter;
+    private RecommendFragment recommendFragment;
+    private RecommendContract.RecPresenter recPresenter;
+    private  String  flag;
 
     public static String TAG = "MainActivity";
     public final static int INTENT_ACTIVITY_BY_POISEARCH = 1;
@@ -35,17 +41,46 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        Intent intent = getIntent();
+        flag = intent.getStringExtra("intent");
         initFragment();
     }
 
     private void initFragment() {
         fragmentManger = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManger.beginTransaction();
-        mapFragment = new MapFragment(this);
-        transaction.add(R.id.framelayout, mapFragment);
-        mapPresenter = new MapPresenter(mapFragment);
-        Log.d("MainActivity", "creat mapFragment");
+        hideFragment(transaction);
+        switch (flag){
+            case "Map":
+                if (mapFragment==null){
+                    mapFragment = new MapFragment(this);
+                    transaction.add(R.id.framelayout, mapFragment);
+                    mapPresenter = new MapPresenter(mapFragment);
+                    Log.d("MainActivity", "creat mapFragment");
+                }else{
+                    transaction.show(mapFragment);
+                }
+                break;
+            case "Note":
+                if (recommendFragment==null){
+                    recommendFragment = new RecommendFragment(this,fragmentManger);
+                    transaction.add(R.id.framelayout,recommendFragment);
+                    recPresenter = new RecommendPresenter(recommendFragment);
+                }else{
+                    transaction.show(recommendFragment);
+                }
+                break;
+        }
         transaction.commit();
+    }
+
+    private void hideFragment(FragmentTransaction transaction) {
+        if (mapFragment!=null){
+            transaction.hide(mapFragment);
+        }
+        if (recommendFragment!=null){
+            transaction.hide(recommendFragment);
+        }
     }
 
     @Override
