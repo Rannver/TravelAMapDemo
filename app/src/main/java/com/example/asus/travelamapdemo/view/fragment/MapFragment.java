@@ -7,14 +7,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ToggleButton;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -31,9 +30,6 @@ import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-
-
-import com.amap.api.maps2d.overlay.DrivingRouteOverlay;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveRouteResult;
@@ -49,7 +45,6 @@ import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.ListHolder;
 import com.orhanobut.dialogplus.OnItemClickListener;
-import com.orhanobut.dialogplus.ViewHolder;
 
 import java.util.List;
 
@@ -63,13 +58,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by ASUS on 2017/7/11.
  */
 
-public class MapFragment extends BaseFragment implements MapContract.MapView, LocationSource, AMapLocationListener{
+public class MapFragment extends BaseFragment implements MapContract.MapView, LocationSource, AMapLocationListener,View.OnClickListener {
 
     Unbinder unbinder;
     @BindView(R.id.mapview)
     MapView mapview;
     @BindView(R.id.searchview_map)
     SearchView searchviewMap;
+    @BindView(R.id.btu_group)
+    FloatingActionButton btuGroup;
+    @BindView(R.id.btu_say)
+    ToggleButton btuSay;
+    @BindView(R.id.btu_history)
+    FloatingActionButton btuHistory;
+    @BindView(R.id.btu_endpoint)
+    FloatingActionButton btuEndpoint;
 
     private String TAG = "MapFragment";
     private View view;
@@ -93,7 +96,6 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
     private DrivingRouteOverLay endRouteOverlay;
 
 
-
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
 
@@ -109,15 +111,15 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
         mapview.onCreate(savedInstanceState);
         aMap = mapview.getMap();
 
-        viewGroup=container;
+        viewGroup = container;
         presenter.start();
 
 
         return view;
     }
 
-    public MapFragment(Context context){
-        this.context=context;
+    public MapFragment(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -132,7 +134,7 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PoiSearchActivity.class);
-                intent.putExtra("flag",PoiSearchActivity.FLAG_INTENT_BY_MAP);
+                intent.putExtra("flag", PoiSearchActivity.FLAG_INTENT_BY_MAP);
                 getActivity().startActivityForResult(intent, MainActivity.INTENT_ACTIVITY_BY_POISEARCH);
             }
         });
@@ -147,6 +149,7 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
         }
         aMap.setLocationSource(this);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
+        aMap.getUiSettings().setZoomControlsEnabled(false);
         aMap.setMyLocationEnabled(true);
 
         sensorEventHelper = new SensorEventHelper(getContext());
@@ -154,19 +157,19 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
             sensorEventHelper.registerSensorListener();
         }
 
-        dialogAdpter = new MapDialogAdpter(context,presenter);
+        dialogAdpter = new MapDialogAdpter(context, presenter);
 
     }
 
     @Override
     public void initEndPoint() {
-        if(endMarker!=null){
+        if (endMarker != null) {
             endMarker.destroy();
         }
         LocationInfoSingleton singleton = LocationInfoSingleton.getInfoSingleton();
-        if (singleton.getEndPoint()!=null){
+        if (singleton.getEndPoint() != null) {
             LatLonPoint latLonPoint = singleton.getEndPoint();
-            final LatLng latLng = new LatLng(latLonPoint.getLatitude(),latLonPoint.getLongitude());
+            final LatLng latLng = new LatLng(latLonPoint.getLatitude(), latLonPoint.getLongitude());
             Bitmap bMap = BitmapFactory.decodeResource(this.getResources(),
                     R.drawable.ic_endpoint);
 
@@ -178,22 +181,21 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
             markerOptions.position(latLng);
             endMarker = aMap.addMarker(markerOptions);
             endMarkerName = singleton.getEndName();
-            setMarkerOnclickListener(latLng,singleton.getEndName(),singleton.getEndDes());
+            setMarkerOnclickListener(latLng, singleton.getEndName(), singleton.getEndDes());
         }
     }
 
 
-
     @Override
     public void initMarkerBySearch(final LatLonPoint point, final String name, final String des) {
-        if (marker!=null){
+        if (marker != null) {
             marker.destroy();
         }
-        final LatLng latLng = new LatLng(point.getLatitude(),point.getLongitude());
+        final LatLng latLng = new LatLng(point.getLatitude(), point.getLongitude());
         marker = aMap.addMarker(new MarkerOptions().position(latLng));
         aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
         markerName = name;
-        setMarkerOnclickListener(latLng,name,des);
+        setMarkerOnclickListener(latLng, name, des);
     }
 
     @Override
@@ -202,23 +204,23 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
             @Override
             public boolean onMarkerClick(Marker marker) {
                 //dialog puls
-                if(marker.getPosition().equals(latLng)){
-                    View view =LayoutInflater.from(context).inflate(R.layout.dialog_map,viewGroup,false);
-                    View footer =LayoutInflater.from(context).inflate(R.layout.dialog_footer,viewGroup,false);
+                if (marker.getPosition().equals(latLng)) {
+                    View view = LayoutInflater.from(context).inflate(R.layout.dialog_map, viewGroup, false);
+                    View footer = LayoutInflater.from(context).inflate(R.layout.dialog_footer, viewGroup, false);
                     dialogAdpter.setMarker(marker);
-                    if (marker==endMarker){
+                    if (marker == endMarker) {
                         dialogAdpter.setEndFlag(true);
                     }
 
                     DialogPlus dialogPlus = DialogPlus.newDialog(context)
                             .setFooter(footer)
-                            .setContentHolder(dialogAdpter.getViewHolder(view,name,des))
+                            .setContentHolder(dialogAdpter.getViewHolder(view, name, des))
                             .setGravity(Gravity.BOTTOM)
                             .create();
                     dialogPlus.show();
 
                     dialogAdpter.setDialogPlus(dialogPlus);
-                    dialogAdpter.setFooter(dialogPlus.getFooterView(),pathDrawFlag);
+                    dialogAdpter.setFooter(dialogPlus.getFooterView(), pathDrawFlag);
                 }
 
                 return false;
@@ -229,10 +231,10 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
     @Override
     public void showDrivePathList(final DriveRouteResult result, final boolean isEnd) {
         List<DrivePath> list = result.getPaths();
-        System.out.println(TAG+":"+list);
-        PathListAdpter adpter = new PathListAdpter(context,list,presenter);
+        System.out.println(TAG + ":" + list);
+        PathListAdpter adpter = new PathListAdpter(context, list, presenter);
         ListHolder listHolder = new ListHolder();
-        listHolder.getView(LayoutInflater.from(context),viewGroup);
+        listHolder.getView(LayoutInflater.from(context), viewGroup);
         listHolder.setAdapter(adpter);
         final DialogPlus dialogPlus = DialogPlus.newDialog(context)
                 .setContentHolder(listHolder)
@@ -242,29 +244,29 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
                 .setOnItemClickListener(new OnItemClickListener() {
                     @Override
                     public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-                        presenter.setPathLine(result.getStartPos(),result.getTargetPos(),result.getPaths().get(position),isEnd);
+                        presenter.setPathLine(result.getStartPos(), result.getTargetPos(), result.getPaths().get(position), isEnd);
                     }
                 })
                 .create();
         dialogPlus.show();
         routeDialogPlus = dialogPlus;
-        dialogAdpter.setHead(dialogPlus.getHeaderView(),markerName);
+        dialogAdpter.setHead(dialogPlus.getHeaderView(), markerName);
     }
 
     @Override
-    public void showPathLine(LatLonPoint start, LatLonPoint end, DrivePath path,boolean isEnd) {
-        if (routeDialogPlus!=null){
+    public void showPathLine(LatLonPoint start, LatLonPoint end, DrivePath path, boolean isEnd) {
+        if (routeDialogPlus != null) {
             routeDialogPlus.dismiss();
         }
-        if (routeOverlay!=null) {
+        if (routeOverlay != null) {
             routeOverlay.removeFromMap();
         }
-        routeOverlay = showLine(start,end,path);
+        routeOverlay = showLine(start, end, path);
     }
 
-    private DrivingRouteOverLay showLine(LatLonPoint start, LatLonPoint end, DrivePath path){
+    private DrivingRouteOverLay showLine(LatLonPoint start, LatLonPoint end, DrivePath path) {
         DrivingRouteOverLay overLay;
-        overLay = new DrivingRouteOverLay(context,aMap,path,start,end,null,presenter);
+        overLay = new DrivingRouteOverLay(context, aMap, path, start, end, null, presenter);
         overLay.setNodeIconVisibility(true);
         overLay.removeFromMap();
         overLay.addToMap();
@@ -274,7 +276,7 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
 
     @Override
     public void CancelPathLine() {
-        if (routeOverlay!=null){
+        if (routeOverlay != null) {
             routeOverlay.removeFromMap();
         }
     }
@@ -382,7 +384,6 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
     }
 
 
-
     private void addCircle(LatLng latlng, double radius) {
         CircleOptions options = new CircleOptions();
         options.strokeWidth(1f);
@@ -408,5 +409,28 @@ public class MapFragment extends BaseFragment implements MapContract.MapView, Lo
         options.position(latlng);
         Locmarker = aMap.addMarker(options);
         dialogAdpter.setStartMaker(Locmarker);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btu_endpoint:
+                if (endMarker!=null){
+                    aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(endMarker.getPosition(), 18));
+                }
+                break;
+            case R.id.btu_group:
+                //点击团队成员逻辑在这里写
+                break;
+            case R.id.btu_history:
+                //点击对讲历史记录逻辑在这里写
+                break;
+            case R.id.btu_say:
+                //点击对讲逻辑在这里写
+                //布局的按钮样式还没设置...记得...
+                break;
+            default:
+                break;
+        }
     }
 }

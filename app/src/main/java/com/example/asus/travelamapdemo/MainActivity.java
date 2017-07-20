@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case INTENT_ACTIVITY_BY_POISEARCH:
                 LocationInfoSingleton singleton = LocationInfoSingleton.getInfoSingleton();
-                mapPresenter.setSearchMarkerPoint(singleton.getPoint(),singleton.getName(),singleton.getDes());
-//                System.out.println(TAG+":"+singleton.getPoint());
-
+                if (singleton.getPoint()!=null){
+                    mapPresenter.setSearchMarkerPoint(singleton.getPoint(),singleton.getName(),singleton.getDes());
+                }
                 break;
         }
     }

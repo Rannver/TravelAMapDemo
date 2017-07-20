@@ -22,6 +22,24 @@
         android:layout_marginLeft="6dp">
     </android.support.v7.widget.SearchView>
 
+    <include layout="@layout/fragment_button"
+        android:id="@+id/layout_btu"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        ></include>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btu_endpoint"
+        app:backgroundTint="@color/md_white"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="64dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/ic_endbtu"
+        app:fabSize="mini"/>
 
 
 </RelativeLayout>
