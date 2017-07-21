@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.astuetz.PagerSlidingTabStrip;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.adpter.NoteViewPagerAdpter;
-import com.example.asus.travelamapdemo.contract.RecommendContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +24,7 @@ import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
  * Created by ASUS on 2017/7/20.
  */
 
-public class RecommendFragment extends BaseFragment implements RecommendContract.RecView {
+public class RecommendFragment extends BaseFragment{
 
     @BindView(R.id.note_tabs)
     PagerSlidingTabStrip noteTabs;
@@ -37,7 +36,6 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
     private View view;
     private ViewGroup viewGroup;
     private Context context;
-    private RecommendContract.RecPresenter presenter;
     private FragmentManager fragmentManager;
 
     private static String TAG = "RecommendFragment";
@@ -62,14 +60,8 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
     }
 
 
-    @Override
-    public void setPresenter(RecommendContract.RecPresenter presenter) {
-        this.presenter = checkNotNull(presenter);
-    }
-
-    @Override
     public void initView() {
-        noteViewpager.setAdapter(new NoteViewPagerAdpter(fragmentManager));
+        noteViewpager.setAdapter(new NoteViewPagerAdpter(fragmentManager,context));
         noteTabs.setViewPager(noteViewpager);
     }
 

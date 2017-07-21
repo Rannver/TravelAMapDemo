@@ -5,16 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.widget.FrameLayout;
 
-import com.amap.api.services.core.LatLonPoint;
-import com.example.asus.travelamapdemo.contract.RecommendContract;
 import com.example.asus.travelamapdemo.presenter.MapPresenter;
-import com.example.asus.travelamapdemo.presenter.RecommendPresenter;
 import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
-import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 import com.example.asus.travelamapdemo.view.fragment.MapFragment;
 import com.example.asus.travelamapdemo.view.fragment.RecommendFragment;
 
@@ -29,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private MapFragment mapFragment;
     private MapPresenter mapPresenter;
     private RecommendFragment recommendFragment;
-    private RecommendContract.RecPresenter recPresenter;
     private  String  flag;
 
     public static String TAG = "MainActivity";
@@ -65,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
                 if (recommendFragment==null){
                     recommendFragment = new RecommendFragment(this,fragmentManger);
                     transaction.add(R.id.framelayout,recommendFragment);
-                    recPresenter = new RecommendPresenter(recommendFragment);
                 }else{
                     transaction.show(recommendFragment);
                 }

@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/sightlist">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_notelist"/>
 
 </LinearLayout>
