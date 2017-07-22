@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.asus.travelamapdemo.presenter.NoteListPresenter;
+import com.example.asus.travelamapdemo.presenter.SightPresenter;
 import com.example.asus.travelamapdemo.view.fragment.NoteListFragment;
 import com.example.asus.travelamapdemo.view.fragment.SightFragment;
 
@@ -36,7 +37,8 @@ public class NoteViewPagerAdpter extends FragmentPagerAdapter {
                 new NoteListPresenter(noteListFragment);
                 return noteListFragment;
             case 1:
-                sightFragment = new SightFragment();
+                sightFragment = new SightFragment(context);
+                new SightPresenter(sightFragment);
                 return sightFragment;
             default:
                 return null;

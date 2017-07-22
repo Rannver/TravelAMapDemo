@@ -10,8 +10,6 @@ import android.widget.ImageView;
 
 import com.example.asus.travelamapdemo.R;
 
-import it.sephiroth.android.library.picasso.MemoryPolicy;
-import it.sephiroth.android.library.picasso.Picasso;
 
 /**
  * Created by ASUS on 2017/7/21.

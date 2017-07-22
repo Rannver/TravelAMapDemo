@@ -18,6 +18,12 @@
         android:id="@+id/btu_note"
         android:text="游记"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btu_note2"
+        android:text="游记2"/>
+
 
 
 </LinearLayout>

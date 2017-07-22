@@ -18,19 +18,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
-
 /**
  * Created by ASUS on 2017/7/20.
  */
 
-public class RecommendFragment extends BaseFragment{
+public class RecommendFragment extends BaseFragment {
 
+
+    Unbinder unbinder;
     @BindView(R.id.note_tabs)
     PagerSlidingTabStrip noteTabs;
     @BindView(R.id.note_viewpager)
     ViewPager noteViewpager;
-    Unbinder unbinder;
 
 
     private View view;
@@ -61,10 +60,9 @@ public class RecommendFragment extends BaseFragment{
 
 
     public void initView() {
-        noteViewpager.setAdapter(new NoteViewPagerAdpter(fragmentManager,context));
+        noteViewpager.setAdapter(new NoteViewPagerAdpter(fragmentManager, context));
         noteTabs.setViewPager(noteViewpager);
     }
-
 
 
     @Override

@@ -20,6 +20,8 @@ public class ChooseActivity extends AppCompatActivity {
     Button btuMap;
     @BindView(R.id.btu_note)
     Button btuNote;
+    @BindView(R.id.btu_note2)
+    Button btuNote2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,17 +31,21 @@ public class ChooseActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.btu_map, R.id.btu_note})
+    @OnClick({R.id.btu_map, R.id.btu_note,R.id.btu_note2})
     public void onViewClicked(View view) {
         Intent intent;
-        intent = new Intent(ChooseActivity.this,MainActivity.class);
+        intent = new Intent(ChooseActivity.this, MainActivity.class);
         switch (view.getId()) {
             case R.id.btu_map:
-                intent.putExtra("intent","Map");
+                intent.putExtra("intent", "Map");
                 startActivity(intent);
                 break;
             case R.id.btu_note:
-                intent.putExtra("intent","Note");
+                intent.putExtra("intent", "Note");
+                startActivity(intent);
+                break;
+            case R.id.btu_note2:
+                intent.putExtra("intent", "Note2");
                 startActivity(intent);
                 break;
         }

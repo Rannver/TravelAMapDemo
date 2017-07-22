@@ -9,9 +9,11 @@ import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.example.asus.travelamapdemo.presenter.MapPresenter;
+import com.example.asus.travelamapdemo.presenter.RecPresenter;
 import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
 import com.example.asus.travelamapdemo.view.fragment.MapFragment;
 import com.example.asus.travelamapdemo.view.fragment.RecommendFragment;
+import com.example.asus.travelamapdemo.view.fragment.SecondRecFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private MapFragment mapFragment;
     private MapPresenter mapPresenter;
     private RecommendFragment recommendFragment;
+    private SecondRecFragment secondRecFragment;
     private  String  flag;
 
     public static String TAG = "MainActivity";
@@ -63,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
                     transaction.show(recommendFragment);
                 }
                 break;
+            case "Note2":
+                if (secondRecFragment==null){
+                    secondRecFragment = new SecondRecFragment(this);
+                    new RecPresenter(secondRecFragment);
+                    transaction.add(R.id.framelayout,secondRecFragment);
+                }else {
+                    transaction.show(secondRecFragment);
+                }
+                break;
         }
         transaction.commit();
     }
@@ -74,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
         if (recommendFragment!=null){
             transaction.hide(recommendFragment);
         }
+        if (recommendFragment!=null){
+            transaction.hide(secondRecFragment);
+        }
+
     }
 
     @Override
