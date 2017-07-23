@@ -4,7 +4,6 @@ import android.widget.Toast;
 
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.PoiItem;
-import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeQuery;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
@@ -12,9 +11,9 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.example.asus.travelamapdemo.contract.PoiSearchContract;
-import com.example.asus.travelamapdemo.presenter.PoiSearchPresenter;
-import com.example.asus.travelamapdemo.util.LocationInfoSingleton;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
+
+import static com.example.asus.travelamapdemo.util.PoiSearchUtil.AMAP_POI_CODE_TRAVEL;
 
 /**
  * Created by ASUS on 2017/7/13.
@@ -24,7 +23,6 @@ public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSear
 
     private PoiSearchContract.PoiSearchPresenter poiSearchPresenter;
 
-    private static String AMAP_POI_CODE_TRAVEL = "110200";
     private static String TAG = "PoiSearchModel";
 
     public PoiSearchModel(PoiSearchContract.PoiSearchPresenter poiSearchPresenter){
