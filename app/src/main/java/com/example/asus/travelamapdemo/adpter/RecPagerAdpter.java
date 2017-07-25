@@ -28,6 +28,7 @@ public class RecPagerAdpter extends PagerAdapter {
     private Context context;
     private int[] imgs = new int[]{R.drawable.iv_pager1,R.drawable.iv_pager2,R.drawable.iv_pager3};
     private String[] titles = new String[]{"大理双廊 | 无关风月，只恋洱海","张家界 | 谁人识得天子面,归来不看天下山","故宫 | 皇家气派余惊叹"};
+
     private List<ImageView> views = new ArrayList<>();
 
     public RecPagerAdpter(Context context){
@@ -73,4 +74,5 @@ public class RecPagerAdpter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
     }
+
 }

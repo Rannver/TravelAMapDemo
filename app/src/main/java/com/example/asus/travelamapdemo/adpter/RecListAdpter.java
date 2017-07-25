@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amap.api.maps2d.model.Text;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.contract.RecContract;
 import com.example.asus.travelamapdemo.presenter.RecPresenter;
@@ -33,6 +34,7 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int Img_Height;
     private ImageSlideUtil util;
     private RecContract.RecPresenter presenter;
+    private ViewGroup parent;
     private int[] imgs = new int[]{R.drawable.iv_pager1,R.drawable.iv_pager2,R.drawable.iv_pager3};
     private String[] titles = new String[]{"大理双廊 | 无关风月，只恋洱海","张家界 | 谁人识得天子面,归来不看天下山","故宫 | 皇家气派余惊叹"};
 
@@ -53,6 +55,7 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder");
+        this.parent = parent;
         View view;
         switch (viewType){
             case VIEWTYPE_VIEWPAGER:
@@ -170,8 +173,9 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         PagerViewHolder pagerViewHolder = (PagerViewHolder) holder;
         pagerViewHolder.viewPager.setAdapter(adpter);
         if (util==null){
-            util = new ImageSlideUtil(context);
+            util = new ImageSlideUtil(context,parent);
         }
+        util.setTitle(pagerViewHolder.textView);
         util.setIndicator(pagerViewHolder.viewPager,pagerViewHolder.indicator,adpter.getCount());
         presenter.setListScrollListener(util);
     }
@@ -182,12 +186,14 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         
         private ViewPager viewPager;
         private LinearLayout indicator;
+        private TextView  textView;
 
         public PagerViewHolder(View itemView) {
             super(itemView);
             Log.d(TAG, "PagerViewHolder");
             viewPager = (ViewPager) itemView.findViewById(R.id.viewpager_rec);
             indicator = (LinearLayout) itemView.findViewById(R.id.viewpager_indicator);
+            textView = (TextView) itemView.findViewById(R.id.viewpager_text);
         }
     }
 

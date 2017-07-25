@@ -7,10 +7,16 @@ import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.asus.travelamapdemo.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ASUS on 2017/7/23.
@@ -27,15 +33,27 @@ public class ImageSlideUtil {
     private int count;
     private int delay = 3000;
     private boolean isF=true;
+    private ViewGroup parent;
+    private TextView pagerText;
     private SparseBooleanArray isLarge;
+    private String[] titles = new String[]{"大理双廊 | 无关风月，只恋洱海","张家界 | 谁人识得天子面,归来不看天下山","故宫 | 皇家气派余惊叹"};
 
     private Animator animatorToLarge;
     private Animator animatorToSmall;
 
-    public ImageSlideUtil(Context context){
+    private String TAG = "ImageSlideUtil";
+
+    public ImageSlideUtil(Context context, ViewGroup parent){
         this.context = context;
+        this.parent = parent;
         animatorToLarge =  AnimatorInflater.loadAnimator(context, R.animator.scale_to_large);
         animatorToSmall =  AnimatorInflater.loadAnimator(context, R.animator.scale_to_small);
+        isLarge = new SparseBooleanArray();
+    }
+
+    public void setTitle(TextView pagerText){
+        this.pagerText = pagerText;
+        this.pagerText.setText(titles[0]);
     }
 
 
@@ -51,7 +69,6 @@ public class ImageSlideUtil {
         this.indicator = indicator;
         this.count = count;
 
-        isLarge = new SparseBooleanArray();
         // 记得创建前先清空数据，否则会受遗留数据的影响。
         indicator.removeAllViews();
         for (int i = 0; i < count; i++) {
@@ -66,10 +83,10 @@ public class ImageSlideUtil {
             isLarge.put(i, false);
         }
         indicator.getChildAt(0).setBackgroundResource(R.drawable.dot_selected);
-//        animatorToLarge.setTarget(indicator.getChildAt(0));
-//        animatorToLarge.start();
+        animatorToLarge.setTarget(indicator.getChildAt(0));
+        animatorToLarge.start();
         isLarge.put(0, true);
-        setListener(count,isLarge);
+        setListener(count);
         starPlay();
     }
 
@@ -117,7 +134,7 @@ public class ImageSlideUtil {
     /**
      *设置监听变化
      */
-    private void setListener(final int count,final SparseBooleanArray isLarge) {
+    private void setListener(final int count) {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -126,21 +143,23 @@ public class ImageSlideUtil {
 
             @Override
             public void onPageSelected(int position) {
+                Log.d(TAG, "onPageSelected: "+position);
+                pagerText.setText(titles[position]);
                 for(int i=0;i<count;i++){
                     if (i==position){
-                        indicator.getChildAt(i).setBackgroundResource(R.drawable.dot_selected);
-//                        if (!isLarge.get(i)) {
-//                            animatorToLarge.setTarget(indicator.getChildAt(i));
-//                            animatorToLarge.start();
-//                            isLarge.put(i, true);
-//                        }
+                        if (!isLarge.get(i)) {
+                            indicator.getChildAt(i).setBackgroundResource(R.drawable.dot_selected);
+                            animatorToLarge.setTarget(indicator.getChildAt(i));
+                            animatorToLarge.start();
+                            isLarge.put(i, true);
+                        }
                     }else {
-                        indicator.getChildAt(i).setBackgroundResource(R.drawable.dot_unselected);
-//                        if (isLarge.get(i)) {
-//                            animatorToSmall.setTarget(indicator.getChildAt(i));
-//                            animatorToSmall.start();
-//                            isLarge.put(i, false);
-//                        }
+                        if (isLarge.get(i)) {
+                            indicator.getChildAt(i).setBackgroundResource(R.drawable.dot_unselected);
+                            animatorToSmall.setTarget(indicator.getChildAt(i));
+                            animatorToSmall.start();
+                            isLarge.put(i, false);
+                        }
                     }
                 }
             }
