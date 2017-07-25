@@ -8,6 +8,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,7 +28,7 @@ public class RecPagerAdpter extends PagerAdapter {
     private Context context;
     private int[] imgs = new int[]{R.drawable.iv_pager1,R.drawable.iv_pager2,R.drawable.iv_pager3};
     private String[] titles = new String[]{"大理双廊 | 无关风月，只恋洱海","张家界 | 谁人识得天子面,归来不看天下山","故宫 | 皇家气派余惊叹"};
-    private List<View> views = new ArrayList<>();
+    private List<ImageView> views = new ArrayList<>();
 
     public RecPagerAdpter(Context context){
         this.context = context;
@@ -35,25 +36,28 @@ public class RecPagerAdpter extends PagerAdapter {
     }
 
     private void initPager(){
-        for (int i =0;i<imgs.length;i++){
-            View view = LayoutInflater.from(context).inflate(R.layout.item_imgpager,null);
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.imageView = (ImageView) view.findViewById(R.id.iv_pager);
-            viewHolder.textView = (TextView) view.findViewById(R.id.tv_pager);
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),imgs[i]);
-            viewHolder.textView.setText(titles[i]);
-            Picasso.with(context)
-                    .load(imgs[i])
-                    .fit()
-                    .into(viewHolder.imageView);
-            views.add(view);
+        for(int i=0;i<imgs.length;i++){
+            ImageView img = new ImageView(context);
+            img.setImageResource(imgs[i]);
+            img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            views.add(img);
         }
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        container.addView(views.get(position));
-        return views.get(position);
+        position%=views.size();
+        if (position<0){
+            position = views.size()+position;
+        }
+        ImageView imageView = views.get(position);
+        ViewParent vp = imageView.getParent();
+        if (vp!=null){
+            ViewGroup parent = (ViewGroup) vp;
+            parent.removeView(imageView);
+        }
+        container.addView(imageView);
+        return imageView;
     }
 
     @Override
@@ -68,11 +72,5 @@ public class RecPagerAdpter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView(views.get(position));
-    }
-
-    public static class ViewHolder{
-        private ImageView imageView;
-        private TextView textView;
     }
 }

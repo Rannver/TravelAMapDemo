@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.adpter.RecListAdpter;
 import com.example.asus.travelamapdemo.contract.RecContract;
+import com.example.asus.travelamapdemo.util.ImageSlideUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,7 +25,7 @@ import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
  * Created by ASUS on 2017/7/22.
  */
 
-public class SecondRecFragment extends BaseFragment implements RecContract.RecView {
+public class SecondRecFragment extends BaseFragment implements RecContract.RecView{
 
     @BindView(R.id.reclist)
     RecyclerView reclist;
@@ -60,7 +61,35 @@ public class SecondRecFragment extends BaseFragment implements RecContract.RecVi
         Log.d(TAG, "initView");
         LinearLayoutManager manager = new LinearLayoutManager(context);
         reclist.setLayoutManager(manager);
-        reclist.setAdapter(new RecListAdpter(context));
+        RecListAdpter adpter = new RecListAdpter(context,presenter);
+        reclist.setAdapter(adpter);
+    }
+
+    @Override
+    public void setListScrollListener(final ImageSlideUtil util) {
+        reclist.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    //获取第一个完全显示的ItemPosition
+                    int firstVisibleItem = manager.findFirstCompletelyVisibleItemPosition();
+                    if (firstVisibleItem>0){
+                        util.setStopPlay();
+                    }else {
+                        util.setStartPlay();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d(TAG, "onScrolled: dx = "+dx+", dy = "+dy);
+            }
+        });
     }
 
     @Override

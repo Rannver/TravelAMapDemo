@@ -5,6 +5,7 @@ import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,13 +19,15 @@ import com.example.asus.travelamapdemo.R;
 public class ImageSlideUtil {
 
     private Context context;
-    private Handler handler;
-    private boolean isAutoPlay = true;
+    private Handler  handler = new Handler();
+    private boolean isAutoPlay ;
     private ViewPager viewPager;
     private LinearLayout indicator;
     private int currentItem;
     private int count;
     private int delay = 3000;
+    private boolean isF=true;
+    private SparseBooleanArray isLarge;
 
     private Animator animatorToLarge;
     private Animator animatorToSmall;
@@ -43,7 +46,6 @@ public class ImageSlideUtil {
 
         int dotSize = 12;
         int dotSpace = 12;
-        SparseBooleanArray isLarge;
 
         this.viewPager = viewPager;
         this.indicator = indicator;
@@ -64,8 +66,8 @@ public class ImageSlideUtil {
             isLarge.put(i, false);
         }
         indicator.getChildAt(0).setBackgroundResource(R.drawable.dot_selected);
-        animatorToLarge.setTarget(indicator.getChildAt(0));
-        animatorToLarge.start();
+//        animatorToLarge.setTarget(indicator.getChildAt(0));
+//        animatorToLarge.start();
         isLarge.put(0, true);
         setListener(count,isLarge);
         starPlay();
@@ -73,27 +75,43 @@ public class ImageSlideUtil {
 
     //自动轮播
 
-    private Runnable task = new Runnable() {
+    private Runnable task1 = new Runnable() {
         @Override
         public void run() {
-            if (isAutoPlay){
+            Log.d("mmm", "run: "+currentItem +" "+task1.hashCode());
+            if (isAutoPlay) {
+
                 //这里只适用于少数，更多轮播的情况需要优化算法
-                if ((currentItem%count+1)!=count){
+                if ((currentItem % count + 1) != count) {
                     currentItem = currentItem % count + 1;
-                }else {
+                } else {
                     currentItem = 0;
                 }
                 viewPager.setCurrentItem(currentItem);
-                handler.postDelayed(task,delay);
-            }else {
-                handler.postDelayed(task,5000);
             }
+            handler.postDelayed(task1,delay);
         }
     };
 
+
+
     private void starPlay() {
-        handler = new Handler();
-        handler.postDelayed(task,delay);
+        isAutoPlay = true;
+        if (isF){
+            handler.postDelayed(task1, delay);
+            isF=false;
+        }
+        Log.d("mmmmmmmmm", "starPlay: "+task1.hashCode());
+    }
+
+    public void setStartPlay(){
+        isAutoPlay = true;
+
+    }
+
+    public void setStopPlay(){
+        isAutoPlay = false;
+
     }
 
     /**
@@ -111,18 +129,18 @@ public class ImageSlideUtil {
                 for(int i=0;i<count;i++){
                     if (i==position){
                         indicator.getChildAt(i).setBackgroundResource(R.drawable.dot_selected);
-                        if (!isLarge.get(i)) {
-                            animatorToLarge.setTarget(indicator.getChildAt(i));
-                            animatorToLarge.start();
-                            isLarge.put(i, true);
-                        }
+//                        if (!isLarge.get(i)) {
+//                            animatorToLarge.setTarget(indicator.getChildAt(i));
+//                            animatorToLarge.start();
+//                            isLarge.put(i, true);
+//                        }
                     }else {
                         indicator.getChildAt(i).setBackgroundResource(R.drawable.dot_unselected);
-                        if (isLarge.get(i)) {
-                            animatorToSmall.setTarget(indicator.getChildAt(i));
-                            animatorToSmall.start();
-                            isLarge.put(i, false);
-                        }
+//                        if (isLarge.get(i)) {
+//                            animatorToSmall.setTarget(indicator.getChildAt(i));
+//                            animatorToSmall.start();
+//                            isLarge.put(i, false);
+//                        }
                     }
                 }
             }

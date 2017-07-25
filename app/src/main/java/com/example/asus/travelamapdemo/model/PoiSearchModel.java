@@ -11,15 +11,16 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.example.asus.travelamapdemo.contract.PoiSearchContract;
+import com.example.asus.travelamapdemo.util.PoiSearchUtil;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 
-import static com.example.asus.travelamapdemo.util.PoiSearchUtil.AMAP_POI_CODE_TRAVEL;
+import static com.example.asus.travelamapdemo.util.PoiSearchUtil.POISEARCH_QUERY_ENDPOINT;
 
 /**
  * Created by ASUS on 2017/7/13.
  */
 
-public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSearch.OnGeocodeSearchListener{
+public class PoiSearchModel implements GeocodeSearch.OnGeocodeSearchListener{
 
     private PoiSearchContract.PoiSearchPresenter poiSearchPresenter;
 
@@ -30,18 +31,15 @@ public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSear
     }
 
     public void doSearchQuery(String str,int flag){
-        PoiSearch.Query query = null;
+        PoiSearchUtil poiSearchUtil = new PoiSearchUtil(poiSearchPresenter.getView(),poiSearchPresenter);
         switch (flag){
             case PoiSearchActivity.FLAG_INTENT_BY_MAP:
-                query = new PoiSearch.Query(str,"","");//地址搜索，第三参数默认为空，全国范围内搜索
+                poiSearchUtil.doSearchQuery(str,"","",PoiSearchUtil.POISEARCH_QUERY_MARKER);
                 break;
             case PoiSearchActivity.FLAG_INTENT_BY_TEAM:
-                query = new PoiSearch.Query(str,AMAP_POI_CODE_TRAVEL,"");//景区搜索第三参数默认为空，全国范围内搜索
+                poiSearchUtil.doSearchQuery(str,PoiSearchUtil.AMAP_POI_CODE_TRAVEL,"",POISEARCH_QUERY_ENDPOINT);
                 break;
         }
-        PoiSearch poiSearch = new PoiSearch(poiSearchPresenter.getView(),query);
-        poiSearch.setOnPoiSearchListener(this);
-        poiSearch.searchPOIAsyn();
     }
 
     public void doGeocodeQuery(String name,String city){
@@ -52,25 +50,6 @@ public class PoiSearchModel implements PoiSearch.OnPoiSearchListener,GeocodeSear
 
     }
 
-
-    //poiSearch请求
-    @Override
-    public void onPoiSearched(PoiResult poiResult, int i) {
-        if (i == AMapException.CODE_AMAP_SUCCESS){
-            if ((poiResult!=null&&poiResult.getQuery()!=null)&&poiResult.getPois().size()!=0){
-                poiSearchPresenter.setList(poiResult.getPois());
-            }else {
-                Toast.makeText(poiSearchPresenter.getView(),"查询结果为空，请检查输入的关键词",Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Toast.makeText(poiSearchPresenter.getView(),"查询失败,错误码"+i,Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onPoiItemSearched(PoiItem poiItem, int i) {
-
-    }
 
     /**
      *逆地理编码回调（目前不需要这个函数）

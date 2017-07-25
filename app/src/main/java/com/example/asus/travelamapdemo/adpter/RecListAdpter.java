@@ -13,7 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.asus.travelamapdemo.R;
+import com.example.asus.travelamapdemo.contract.RecContract;
+import com.example.asus.travelamapdemo.presenter.RecPresenter;
 import com.example.asus.travelamapdemo.util.ImageSlideUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import it.sephiroth.android.library.picasso.Picasso;
 
@@ -26,6 +31,10 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private Context context;
     private int Img_Width;
     private int Img_Height;
+    private ImageSlideUtil util;
+    private RecContract.RecPresenter presenter;
+    private int[] imgs = new int[]{R.drawable.iv_pager1,R.drawable.iv_pager2,R.drawable.iv_pager3};
+    private String[] titles = new String[]{"大理双廊 | 无关风月，只恋洱海","张家界 | 谁人识得天子面,归来不看天下山","故宫 | 皇家气派余惊叹"};
 
     private static final int VIEWTYPE_VIEWPAGER = 0;
     private static final int VIEWTYPE_GRID = 1;
@@ -34,9 +43,10 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int VIEWTYPE_TITLE_NOTE = 4;
     private static String TAG = "RecListAdpter";
 
-    public RecListAdpter(Context context){
+    public RecListAdpter(Context context,RecContract.RecPresenter presenter){
         Log.d(TAG, "RecListAdpter");
         this.context = context;
+        this.presenter = presenter;
     }
 
 
@@ -61,7 +71,7 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 view = LayoutInflater.from(context).inflate(R.layout.item_recnote,parent,false);
                 NoteViewHolder noteViewHolder = new NoteViewHolder(view);
                 noteViewHolder.linearLayout.measure(0,0);
-                System.out.println(TAG+":"+noteViewHolder.linearLayout.getMeasuredHeight()+","+noteViewHolder.linearLayout.getMeasuredWidth());
+//                System.out.println(TAG+":"+noteViewHolder.linearLayout.getMeasuredHeight()+","+noteViewHolder.linearLayout.getMeasuredWidth());
                 Img_Width = noteViewHolder.linearLayout.getMeasuredWidth()/2;
                 Img_Height = noteViewHolder.linearLayout.getMeasuredHeight()*9/10;
                 return noteViewHolder;
@@ -148,14 +158,23 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     //设置ViewPager
     private void setViewPager(RecyclerView.ViewHolder holder) {
+
+        List<ImageView> views = new ArrayList<>();
+        for(int i=0;i<imgs.length;i++){
+            ImageView imageView = new ImageView(context);
+            imageView.setImageResource(imgs[i]);
+            views.add(imageView);
+        }
+
         RecPagerAdpter adpter = new RecPagerAdpter(context);
         PagerViewHolder pagerViewHolder = (PagerViewHolder) holder;
         pagerViewHolder.viewPager.setAdapter(adpter);
-        ImageSlideUtil util = new ImageSlideUtil(context);
+        if (util==null){
+            util = new ImageSlideUtil(context);
+        }
         util.setIndicator(pagerViewHolder.viewPager,pagerViewHolder.indicator,adpter.getCount());
+        presenter.setListScrollListener(util);
     }
-
-
 
 
     //ViewPager的Holder
