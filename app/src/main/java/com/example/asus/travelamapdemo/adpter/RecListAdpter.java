@@ -47,7 +47,7 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public RecListAdpter(Context context,RecContract.RecPresenter presenter){
         Log.d(TAG, "RecListAdpter");
-        this.context = context;
+//        this.context = context;
         this.presenter = presenter;
     }
 
@@ -56,22 +56,23 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder");
         this.parent = parent;
+        this.context = parent.getContext();
         View view;
         switch (viewType){
             case VIEWTYPE_VIEWPAGER:
-                view = LayoutInflater.from(context).inflate(R.layout.item_recpager,parent,false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recpager,parent,false);
                 PagerViewHolder pagerViewHolder = new PagerViewHolder(view);
                 return pagerViewHolder;
             case VIEWTYPE_GRID:
-                view = LayoutInflater.from(context).inflate(R.layout.item_recgrid,parent,false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recgrid,parent,false);
                 GridViewHolder gridViewHolder = new GridViewHolder(view);
                 return gridViewHolder;
             case VIEWTYPE_TITLE_SIGHT:
-                view = LayoutInflater.from(context).inflate(R.layout.item_rectitile,parent,false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rectitile,parent,false);
                 TitleViewHolder titleViewHolder1 = new TitleViewHolder(view);
                 return titleViewHolder1;
             case VIEWTYPE_NOTE:
-                view = LayoutInflater.from(context).inflate(R.layout.item_recnote,parent,false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recnote,parent,false);
                 NoteViewHolder noteViewHolder = new NoteViewHolder(view);
                 noteViewHolder.linearLayout.measure(0,0);
 //                System.out.println(TAG+":"+noteViewHolder.linearLayout.getMeasuredHeight()+","+noteViewHolder.linearLayout.getMeasuredWidth());
@@ -79,7 +80,7 @@ public class RecListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Img_Height = noteViewHolder.linearLayout.getMeasuredHeight()*9/10;
                 return noteViewHolder;
             case VIEWTYPE_TITLE_NOTE:
-                view = LayoutInflater.from(context).inflate(R.layout.item_rectitile,parent,false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rectitile,parent,false);
                 TitleViewHolder titleViewHolder2 = new TitleViewHolder(view);
                 return titleViewHolder2;
             default:
