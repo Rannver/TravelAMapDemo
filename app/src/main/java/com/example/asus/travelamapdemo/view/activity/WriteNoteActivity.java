@@ -12,9 +12,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,10 +70,12 @@ public class WriteNoteActivity extends AppCompatActivity implements WriteNoteCon
     MultiPictureView multipleImage;
 
     private WriteNoteContact.WriteNotePresenter presenter;
+    private String flag;
 
     private static String TAG = "WriteNoteActivity";
     public static final String INTENT_BY_WRITE = "write";
     public static final String INTENT_BY_CHANGE = "change";
+    public static final int REQUEST_BY_POISEARCH = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,17 +93,36 @@ public class WriteNoteActivity extends AppCompatActivity implements WriteNoteCon
 
     @Override
     public void initView() {
+
+        Intent intent = getIntent();
+        if (intent!=null){
+            flag = intent.getStringExtra("status");
+        }
+
         initMultiPictureView();
         multipleimageClick();
+        initbar();
     }
 
     @OnClick({R.id.iv_location, R.id.btu_loation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_location:
-                break;
             case R.id.btu_loation:
+                Intent intent = new Intent(WriteNoteActivity.this,PoiSearchActivity.class);
+                intent.putExtra("flag",PoiSearchActivity.FLAG_INTENT_BY_NOTE);
+                startActivityForResult(intent,REQUEST_BY_POISEARCH);
                 break;
+        }
+    }
+
+    private void initbar() {
+        setSupportActionBar(toolBar);
+        toolbarTitle.setText("编辑游记");
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
         }
     }
 
@@ -124,14 +148,51 @@ public class WriteNoteActivity extends AppCompatActivity implements WriteNoteCon
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.send:
+                //发送后台逻辑
+                break;
+            case R.id.change:
+                //修改后台逻辑
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        switch (flag){
+            case INTENT_BY_WRITE:
+                getMenuInflater().inflate(R.menu.toolbar_note,menu);
+                break;
+            case INTENT_BY_CHANGE:
+                getMenuInflater().inflate(R.menu.toolbar_note2,menu);
+                break;
+
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: "+resultCode);
         if (resultCode == RESULT_OK){
-            Log.d(TAG, "onActivityResult");
+            Log.d(TAG, "onActivityResult"+requestCode);
             switch (requestCode){
                 case MatisseUtil.REQUEST_ADD_IMAGE:
                     //添加图片显示
                     multipleImage.addItem(Matisse.obtainResult(data));
+                    break;
+                case REQUEST_BY_POISEARCH:
+                    //回调显示地址名字
+                    if (data.getStringExtra("sight")!=null){
+                        btuLoation.setText(data.getStringExtra("sight"));
+                    }
                     break;
 
             }

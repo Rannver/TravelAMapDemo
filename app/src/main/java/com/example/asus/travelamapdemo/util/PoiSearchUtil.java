@@ -83,6 +83,8 @@ public class PoiSearchUtil implements PoiSearch.OnPoiSearchListener{
     private void setList(PoiResult poiResult) {
         //presenter逻辑在这里写
         switch (flag){
+            case POISEARCH_QUERY_NOTELOCATION:
+                //游记地点标记查询
             case POISEARCH_QUERY_MARKER:
                 //从地图查询Marker
             case POISEARCH_QUERY_ENDPOINT:
@@ -93,9 +95,6 @@ public class PoiSearchUtil implements PoiSearch.OnPoiSearchListener{
             case POISEARCH_QUERY_SIGHTS:
                 //景区列表查询
 
-                break;
-            case POISEARCH_QUERY_NOTELOCATION:
-                //游记地点标记查询
                 break;
             default:
                 break;

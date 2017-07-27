@@ -15,6 +15,7 @@ import com.example.asus.travelamapdemo.util.PoiSearchUtil;
 import com.example.asus.travelamapdemo.view.activity.PoiSearchActivity;
 
 import static com.example.asus.travelamapdemo.util.PoiSearchUtil.POISEARCH_QUERY_ENDPOINT;
+import static com.example.asus.travelamapdemo.util.PoiSearchUtil.POISEARCH_QUERY_NOTELOCATION;
 
 /**
  * Created by ASUS on 2017/7/13.
@@ -38,6 +39,9 @@ public class PoiSearchModel implements GeocodeSearch.OnGeocodeSearchListener{
                 break;
             case PoiSearchActivity.FLAG_INTENT_BY_TEAM:
                 poiSearchUtil.doSearchQuery(str,PoiSearchUtil.AMAP_POI_CODE_TRAVEL,"",POISEARCH_QUERY_ENDPOINT);
+                break;
+            case PoiSearchActivity.FLAG_INTENT_BY_NOTE:
+                poiSearchUtil.doSearchQuery(str,PoiSearchUtil.AMAP_POI_CODE_TRAVEL,"",POISEARCH_QUERY_NOTELOCATION);
                 break;
         }
     }

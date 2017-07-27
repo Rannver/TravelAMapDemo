@@ -45,6 +45,7 @@ public class PoiSearchActivity extends AppCompatActivity implements PoiSearchCon
     private static String TAG = "PoiSearchActivity";
     public final static int FLAG_INTENT_BY_MAP = 1;
     public final static int FLAG_INTENT_BY_TEAM = 2;
+    public final static int FLAG_INTENT_BY_NOTE = 3;
 
 
 
@@ -98,7 +99,22 @@ public class PoiSearchActivity extends AppCompatActivity implements PoiSearchCon
         adpter.setOnItemClickLister(new PoiListAdpter.OnItemClickLister() {
             @Override
             public void OnItemClickListener(View view, int poisition) {
-                presenter.GeocodeSearch(list.get(poisition));
+                switch (flag){
+                    case FLAG_INTENT_BY_MAP:
+                        //显示在地图上
+                        presenter.GeocodeSearch(list.get(poisition));
+                        break;
+                    case FLAG_INTENT_BY_TEAM:
+                        //回调显示在目的地
+                        break;
+                    case FLAG_INTENT_BY_NOTE:
+                        //回调显示在游记编辑
+                        Intent intent = new Intent();
+                        intent.putExtra("sight",list.get(poisition).getTitle());
+                        setResult(RESULT_OK,intent);
+                        finish();
+                        break;
+                }
             }
         });
         poilist.setAdapter(adpter);
