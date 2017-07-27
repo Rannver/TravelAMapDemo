@@ -25,6 +25,7 @@ import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.contract.WriteNoteContact;
 import com.example.asus.travelamapdemo.presenter.WriteNotePresenter;
 import com.example.asus.travelamapdemo.util.MatisseUtil;
+import com.goyourfly.multi_picture.ImageLoader;
 import com.goyourfly.multi_picture.MultiPictureView;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
@@ -39,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.sephiroth.android.library.picasso.Picasso;
 
 import static android.support.v4.util.Preconditions.checkNotNull;
 
@@ -86,6 +88,7 @@ public class WriteNoteActivity extends AppCompatActivity implements WriteNoteCon
 
     @Override
     public void initView() {
+        initMultiPictureView();
         multipleimageClick();
     }
 
@@ -99,12 +102,23 @@ public class WriteNoteActivity extends AppCompatActivity implements WriteNoteCon
         }
     }
 
+    private void initMultiPictureView() {
+        MultiPictureView.setImageLoader(new ImageLoader() {
+            @Override
+            public void loadImage(ImageView imageView, Uri uri) {
+                Picasso.with(WriteNoteActivity.this)
+                        .load(uri)
+                        .into(imageView);
+            }
+        });
+    }
+
     private void multipleimageClick() {
         Log.d(TAG, "multipleimageClick");
         multipleImage.setAddClickCallback(new MultiPictureView.AddClickCallback() {
             @Override
             public void onAddClick(@NotNull View view) {
-                MatisseUtil util = new MatisseUtil(WriteNoteActivity.this);
+                MatisseUtil util = new MatisseUtil(WriteNoteActivity.this,multipleImage);
             }
         });
     }
@@ -112,8 +126,15 @@ public class WriteNoteActivity extends AppCompatActivity implements WriteNoteCon
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==MatisseUtil.REQUEST_ADD_IMAGE&&resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK){
             Log.d(TAG, "onActivityResult");
+            switch (requestCode){
+                case MatisseUtil.REQUEST_ADD_IMAGE:
+                    //添加图片显示
+                    multipleImage.addItem(Matisse.obtainResult(data));
+                    break;
+
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.example.asus.travelamapdemo.R;
 import com.example.asus.travelamapdemo.view.activity.WriteNoteActivity;
 import com.google.common.io.Resources;
+import com.goyourfly.multi_picture.MultiPictureView;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.ImageEngine;
@@ -25,14 +26,16 @@ import it.sephiroth.android.library.picasso.Picasso;
 public class MatisseUtil {
 
     private Activity activity;
+    private MultiPictureView multiPictureView;
 
     public static final int REQUEST_ADD_IMAGE = 2;
     public static final int  MAX_IMAGE_CHOOSE = 9;
     private static String TAG = "MatisseUtil";
 
 
-    public MatisseUtil(Activity activity){
+    public MatisseUtil(Activity activity, MultiPictureView multiPictureView){
         this.activity = activity;
+        this.multiPictureView = multiPictureView;
         start();
     }
 
@@ -40,7 +43,10 @@ public class MatisseUtil {
         Matisse.from(activity)
                 .choose(MimeType.allOf())
                 .countable(true)
-                .maxSelectable(9)
+                .capture(true)
+                .captureStrategy(new CaptureStrategy(true,"com.example.asus.travelamapdemo.fileprovider"))
+                .maxSelectable(MAX_IMAGE_CHOOSE-multiPictureView.getCount())
+                .theme(R.style.Matisse_Dracula)
                 .gridExpectedSize(activity.getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 .thumbnailScale(0.85f)
